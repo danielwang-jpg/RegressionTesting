@@ -353,7 +353,7 @@ tr.module-other td {
         const note = document.getElementById("customNote").value.trim();
         const noteCheck = document.getElementById("customCheck").checked;
         if (note && noteCheck) {
-        csvContent += `其他,${note},v\n`;
+        csvContent += `額外補充項目,${note},v\n`;
         }
 
         if (csvContent.trim() === "模塊,功能,是否回歸") {
