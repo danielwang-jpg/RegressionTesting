@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>回歸驗證項目表</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .table-container {
+      max-width: 95%;
+      margin: 0 auto;
+      overflow-x: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      table-layout: auto;
+    }
+    th {
+      background-color: #0d6efd;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    tr.module-club-homepage td {
+      background-color: #e8f0fe;
+    }
+    tr.module-club-union td {
+      background-color: #e0f7fa;
+    }
+    tr.module-club-member td {
+      background-color: #e8f0fe;
+    }
+    tr.module-club-counter td {
+      background-color: #e0f7fa;
+    }
+    tr.module-club-data td {
+      background-color: #e8f0fe;
+    }
+    tr.module-club-management td {
+      background-color: #e0f7fa;
+    }
+    tr.module-club-table td {
+      background-color: #e8f0fe;
+    }
+    tr.module-club-template td {
+      background-color: #e0f7fa;
+    }
+    tr.module-club-event td {
+      background-color: #e8f0fe;
+    }
+    tr.module-club-desk td{
+      background-color: #e0f7fa;
+    }
+    tr.module-home td {
+      background-color: #e8f0fe;
+    }
+    tr.module-mall td {
+      background-color: #e0f7fa;
+    }
+    tr.module-community td {
+      background-color: #e8f0fe;
+    }
+    tr.module-career td {
+      background-color: #e0f7fa;
+    }
+    tr.module-profile td {
+      background-color: #e8f0fe;
+    }
+    tr.module-tournament td {
+      background-color: #e0f7fa;
+    }
+    tr.module-hall-desk td {
+      background-color: #e8f0fe;
+    }
+    tr.module-others td {
+      background-color: #e0f7fa;
+    }
+    .btn-export {
+      display: block;
+      margin: 0 auto 40px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>回歸驗證項目表</h1>
+  <div class="table-container">
+    <table class="table table-bordered table-hover" id="reportTable">
+      <thead>
+        <tr>
+          <th>模塊</th>
+          <th>功能</th>
+          <th>是否回歸</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- 表格資料會由 JS 動態插入 -->
+      </tbody>
+        <tfoot>
+        <tr class="module-other">
+            <td>額外補充項目</td>
+            <td><input type="text" class="form-control" id="customNote" placeholder="請輸入其他補充事項..." /></td>
+            <td><input type="checkbox" class="form-check-input returnCheck" id="customCheck"></td>
+        </tr>
+        </tfoot>
+    </table>
+  </div>
+
+  <button class="btn btn-primary btn-export" onclick="exportReport()">送出並匯出報表</button>
+
+<style>
+tr.module-other td {
+    background-color: #f5f5f5;
+}
+</style>
+
+  <script>
+    const data = `模塊\t功能
+俱樂部首頁\t牌桌列表
+俱樂部首頁\t牌桌篩選
+俱樂部首頁\tPP幣兌換
+俱樂部首頁\t俱樂部主題
+俱樂部首頁\t俱樂部簡介
+俱樂部首頁\t俱樂部分享
+俱樂部首頁\t俱樂部信件
+俱樂部首頁\tPP助手
+俱樂部聯盟\tPPST 成員盈虧預警
+俱樂部聯盟\tPPSR 成員盈虧預警
+俱樂部聯盟\t超聯成員盈虧預警
+俱樂部聯盟\t聯盟成員盈虧預警
+俱樂部聯盟\t超聯成員屏蔽牌桌
+俱樂部聯盟\t聯盟成員屏蔽牌桌
+俱樂部聯盟\t加入/解散聯盟
+俱樂部聯盟\t聯盟數據
+俱樂部聯盟\t開桌權限
+俱樂部會員\t會員列表
+俱樂部會員\t會員個人資訊
+俱樂部會員\t會員身分權限設置
+俱樂部會員\t代理授信
+俱樂部會員\t代理下線設定
+俱樂部會員\t從屬代理設定
+俱樂部會員\t超代/代理數據
+俱樂部會員\t超代/代理返水
+俱樂部會員\t暫停超代/代理
+俱樂部會員\t加入刪除會員
+俱樂部會員\t授信請求
+俱樂部櫃台\t會員列表資訊
+俱樂部櫃台\t櫃台收發幣
+俱樂部櫃台\t交易紀錄
+俱樂部櫃台\t贈送道具
+俱樂部櫃台\t贈送門票
+俱樂部數據\t俱樂部數據
+俱樂部數據\t俱樂部報表
+俱樂部管理\t智能俱樂部模式
+俱樂部管理\t通知
+俱樂部管理\t消息
+俱樂部管理\t星級
+俱樂部管理\tjackpot
+俱樂部管理\t背包
+俱樂部管理\t解散排局
+俱樂部管理\t解散俱樂部
+俱樂部開桌\tRG NLH 系列
+俱樂部開桌\tRG PLO 系列
+俱樂部開桌\tRG Flash 系列
+俱樂部開桌\tRG Mixed 系列
+俱樂部開桌\tSPINUP/SNG
+俱樂部開桌\tNLH MTT
+俱樂部開桌\tPLO MTT
+俱樂部開桌\tOFC
+俱樂部開桌\tPUSOY
+俱樂部開桌\tSEKA
+俱樂部開桌\tTongits
+俱樂部開桌\tTeen Patti
+俱樂部開桌\tLucky Draw
+俱樂部開桌\tColor Game
+俱樂部開桌\tRussian Poker
+俱樂部開桌\t小飛機
+俱樂部模板\t模板開桌
+俱樂部模板\t保存模板
+俱樂部模板\t刪除/編輯/複製模板
+俱樂部模板\t模板列表資訊
+俱樂部活動\t手牌任務
+俱樂部活動\tPP幣雨
+俱樂部活動\tPPSR排行榜
+俱樂部活動\tRG 排行榜
+俱樂部活動\t單玩法排行榜
+俱樂部活動\tMTT排行榜
+俱樂部活動\t活動模板
+俱樂部活動\t活動紀錄
+俱樂部牌桌\t牌桌內資訊
+俱樂部牌桌\t牌桌玩法流程表演
+俱樂部牌桌\t菜單欄功能
+俱樂部牌桌\t即時戰績
+俱樂部牌桌\t快速商城
+俱樂部牌桌\tLucky Draw
+俱樂部牌桌\t牌局回顧
+俱樂部牌桌\t即時戰績
+俱樂部牌桌\t聊天室
+俱樂部牌桌\t牌桌中玩家資訊
+俱樂部牌桌\tMTT 賽事資訊
+俱樂部牌桌\t多進程/多桌切換
+俱樂部牌桌\t牌桌入坐/站起
+俱樂部牌桌\tMTT rebuy / add on
+首頁\t俱樂部列表
+首頁\t公告
+首頁\t任務
+首頁\t郵箱
+首頁\t加入/創建俱樂部
+商城\t道具
+商城\t鑽石
+商城\t積分
+社區\tH5 社區資訊
+社區\tH5 牌局回顧
+生涯\t玩家生涯紀錄
+生涯\t各玩法篩選
+個人資訊\t編輯個人資訊
+個人資訊\tNFT
+個人資訊\t鑽石櫃台
+個人資訊\tH5牌局回顧
+個人資訊\t反饋
+個人資訊\t設定
+個人資訊\t關於我們
+個人資訊\t合規
+個人資訊\t邀請碼
+遊戲官賽\t地區戰力排行榜
+遊戲官賽\t好友
+遊戲官賽\t任務
+遊戲官賽\t最佳玩家排行榜
+遊戲官賽\t背包
+遊戲官賽\t牌桌列表
+遊戲官賽\t官賽列表
+遊戲官賽\t我的比賽
+大廳牌桌\t牌桌內資訊
+大廳牌桌\t牌桌玩法流程表演
+大廳牌桌\t菜單欄功能
+大廳牌桌\t即時戰績
+大廳牌桌\t快速商城
+大廳牌桌\t荷官功能
+大廳牌桌\t牌局回顧
+大廳牌桌\t即時戰績
+大廳牌桌\t聊天室
+大廳牌桌\t牌桌中玩家資訊
+大廳牌桌\tMTT 賽事資訊
+大廳牌桌\t多進程/多桌切換
+大廳牌桌\t牌桌入坐/站起
+大廳牌桌\tMTT rebuy / add on
+大廳牌桌\twinner winner
+大廳牌桌\t積分
+大廳牌桌\tLucky Draw
+其他\t自動開始/延時
+其他\t授權買入
+其他\tSetting out(自動進入託管規則與託管狀態的動作)
+其他\t伙牌功能
+其他\t入座提示
+其他\t牌桌分享
+其他\t表情符號
+其他\t斷線保護
+其他\t解散牌桌
+其他\t版本兼容
+其他\tcall time
+其他\t後台切回
+其他\t弱網情況
+其他\t端內外通知
+其他\t各權限身分確認
+其他\t不同俱樂部維度確認
+其他\tGPS/IP`;
+
+    const tableBody = document.getElementById("tableBody");
+    const lines = data.trim().split("\n");
+    lines.shift();
+
+    function getModuleClass(moduleName) {
+      if (moduleName.includes("首頁")) return "module-home";
+      if (moduleName.includes("俱樂部首頁")) return "module-club-homepage";
+      if (moduleName.includes("俱樂部聯盟")) return "module-club-union";
+      if (moduleName.includes("俱樂部會員")) return "module-club-member";
+      if (moduleName.includes("俱樂部櫃台")) return "module-club-counter";
+      if (moduleName.includes("俱樂部數據")) return "module-club-data";
+      if (moduleName.includes("俱樂部管理")) return "module-club-management";
+      if (moduleName.includes("俱樂部開桌")) return "module-club-table";
+      if (moduleName.includes("俱樂部模板")) return "module-club-template";
+      if (moduleName.includes("俱樂部活動")) return "module-club-event";
+      if (moduleName.includes("俱樂部牌桌")) return "module-club-desk";
+      if (moduleName.includes("大廳牌桌")) return "module-hall-desk";
+      if (moduleName.includes("商城")) return "module-mall";
+      if (moduleName.includes("社區")) return "module-community";
+      if (moduleName.includes("生涯")) return "module-career";
+      if (moduleName.includes("個人資訊")) return "module-profile";
+      if (moduleName.includes("遊戲官賽")) return "module-tournament";
+      if (moduleName.includes("其他")) return "module-others";
+      return "";
+    }
+
+    lines.forEach(line => {
+      const [module, feature] = line.split("\t");
+      const tr = document.createElement("tr");
+      tr.className = getModuleClass(module);
+      tr.innerHTML = `<td>${module}</td><td>${feature}</td><td><input type="checkbox" class="form-check-input returnCheck"></td>`;
+      tableBody.appendChild(tr);
+    });
+
+    function mergeTable() {
+      const rows = tableBody.rows;
+      let lastModule = "";
+      let rowspan = 1;
+      for (let i = 0; i < rows.length; i++) {
+        const cell = rows[i].cells[0];
+        const currentModule = cell.textContent;
+        if (currentModule === lastModule) {
+          rows[i - rowspan].cells[0].rowSpan++;
+          cell.remove();
+          rowspan++;
+        } else {
+          lastModule = currentModule;
+          rowspan = 1;
+        }
+      }
+    }
+
+    mergeTable();
+
+    window.exportReport = function () {
+        const rows = tableBody.querySelectorAll("tr");
+        let csvContent = "模塊,功能,是否回歸\n";
+        let currentModule = "";
+        rows.forEach((row) => {
+        const cells = row.querySelectorAll("td");
+        const feature = cells[cells.length - 2].innerText;
+        const checkbox = cells[cells.length - 1].querySelector("input");
+        if (cells.length === 3) {
+            currentModule = cells[0].innerText;
+        }
+        if (checkbox.checked) {
+            csvContent += `${currentModule},${feature},v\n`;
+        }
+        checkbox.checked = false;
+        });
+
+        const note = document.getElementById("customNote").value.trim();
+        const noteCheck = document.getElementById("customCheck").checked;
+        if (note && noteCheck) {
+        csvContent += `其他,${note},v\n`;
+        }
+
+        if (csvContent.trim() === "模塊,功能,是否回歸") {
+        alert("你還沒勾選任何項目唷！╮(╯_╰)╭");
+        return;
+        }
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "回歸驗證項目表.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("customNote").value = "";
+        document.getElementById("customCheck").checked = false;
+    }
+    </script>
+</body>
+</html>
